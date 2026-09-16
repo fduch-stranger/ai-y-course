@@ -1,0 +1,18 @@
+{
+  "_comment": "Codex plus optional NVIDIA-hosted critics. Credentials come from environment variables; model availability must be verified before full review. Bootstrap preserves existing configuration.",
+  "critics": {
+    "critic_a": {
+      "backend": "codex-cli"
+    },
+    "critic_b": {
+      "backend": "nim",
+      "model": "minimaxai/minimax-m3",
+      "api_key_env": "NVIDIA_API_KEY"
+    },
+    "critic_c": {
+      "backend": "nim",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "api_key_env": "NVIDIA_API_KEY"
+    }
+  }
+}

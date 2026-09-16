@@ -1,0 +1,9 @@
+# Credentials and local runtime outputs
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+.serena/cache/
+.serena/project.local.yml
