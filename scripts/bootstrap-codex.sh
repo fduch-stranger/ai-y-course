@@ -10,11 +10,11 @@
 #   1. parallel-ai-dev (project memory)          → clone into $KIT_HOME (default ~), init-memory in the project
 #   2. tz-skills (/tz-draft /tz-review /tz-verify /tz-go) → copy into $CODEX_SKILLS_DIR (default .agents/skills)
 #   3. providers.json: Codex + optional NVIDIA NIM slots, preserve existing config
-#   4. IMMUNE — 7 rules against code rot           → appended to the project's CLAUDE.md (once)
+#   4. IMMUNE — 7 rules against code rot           → stored in the project's AGENTS.md
 #   5. Checks: memory self-check + critics smoke test → honest table AS IS
 #
 # Exit code: 0 — all green; 1 — red rows exist (the "what to do" list is printed).
-# Red does NOT mean broken — it is the checklist of what a human / Claude still has to do.
+# Red does NOT mean broken — it is the checklist of what a human / Codex still has to do.
 #
 # Overrides (tests and non-standard folders):
 #   KIT_LANG=uk|en        language of this script's output and of the IMMUNE block (default uk)
@@ -95,7 +95,7 @@ else
     bad "$(L 'Не вдалося склонувати parallel-ai-dev' 'Could not clone parallel-ai-dev')" "$(L "Перевір мережу і запусти: git clone $PAD_REPO $PAD_DIR" "Check the network and run: git clone $PAD_REPO $PAD_DIR")"; PAD_DIR=""; fi
 fi
 if [ -n "$PAD_DIR" ]; then
-  say "   • init-memory $(L 'у проєкті' 'in the project') $(L '' '(the kit prints in Ukrainian — Claude translates for you)'):"
+  say "   • init-memory $(L 'у проєкті' 'in the project') $(L '' '(the kit prints in Ukrainian — Codex translates for you)'):"
   if (cd "$PROJECT_DIR" && bash "$PAD_DIR/scripts/init-memory.sh" 2>&1 | sed 's/^/     /'); then
     ok "$(L "Пам'ять проєкту розгорнута" 'Project memory deployed') ($PAD_DIR)"
   else
@@ -154,26 +154,26 @@ else
   say "   ✓ NVIDIA_API_KEY $(L 'є в оточенні' 'present in the environment')"
 fi
 
-# ── 6. IMMUNE in the project's CLAUDE.md ──────────────────────────────────────
-say "6/7 IMMUNE — $(L 'правила проти гниття коду' 'rules against code rot') → CLAUDE.md"
+# ── 6. IMMUNE in the project's AGENTS.md ──────────────────────────────────────
+say "6/7 IMMUNE — $(L 'правила проти гниття коду' 'rules against code rot') → AGENTS.md"
 if [ "$KIT_LANG" = "en" ]; then BLOCK="$TZ_ROOT/docs/IMMUNE_CLAUDE_BLOCK.en.md"; else BLOCK="$TZ_ROOT/docs/IMMUNE_CLAUDE_BLOCK.md"; fi
 if [ ! -f "$BLOCK" ]; then
   bad "$(L "Файл $BLOCK не знайдено" "File $BLOCK not found")" "$(L "Онови tz-skills: git -C $TZ_ROOT pull --ff-only" "Update tz-skills: git -C $TZ_ROOT pull --ff-only")"
-elif [ -f "$PROJECT_DIR/CLAUDE.md" ] && grep -qE 'Правила проти гниття коду \(IMMUNE\)|Rules against code rot \(IMMUNE\)' "$PROJECT_DIR/CLAUDE.md"; then
-  say "   • $(L 'блок уже є — не дублюю' 'block already present — not duplicating')"; ok "$(L 'IMMUNE уже в CLAUDE.md' 'IMMUNE already in CLAUDE.md')"
+elif [ -f "$PROJECT_DIR/AGENTS.md" ] && grep -qE 'Правила проти гниття коду \(IMMUNE\)|Rules against code rot \(IMMUNE\)' "$PROJECT_DIR/AGENTS.md"; then
+  say "   • $(L 'блок уже є — не дублюю' 'block already present — not duplicating')"; ok "$(L 'IMMUNE уже в AGENTS.md' 'IMMUNE already in AGENTS.md')"
 else
-  { printf '\n'; cat "$BLOCK"; } >> "$PROJECT_DIR/CLAUDE.md" && { say "   ✓ $(L 'дописано в кінець CLAUDE.md' 'appended to the end of CLAUDE.md')"; ok "$(L 'IMMUNE дописано в CLAUDE.md' 'IMMUNE appended to CLAUDE.md')"; } \
-    || bad "$(L 'Не вдалося дописати IMMUNE' 'Could not append IMMUNE')" "$(L "Скопіюй вміст $BLOCK у кінець $PROJECT_DIR/CLAUDE.md руками" "Copy the contents of $BLOCK to the end of $PROJECT_DIR/CLAUDE.md by hand")"
+  { printf '\n'; cat "$BLOCK"; } >> "$PROJECT_DIR/AGENTS.md" && { say "   ✓ $(L 'дописано в кінець AGENTS.md' 'appended to the end of AGENTS.md')"; ok "$(L 'IMMUNE дописано в AGENTS.md' 'IMMUNE appended to AGENTS.md')"; } \
+    || bad "$(L 'Не вдалося дописати IMMUNE' 'Could not append IMMUNE')" "$(L "Скопіюй вміст $BLOCK у кінець $PROJECT_DIR/AGENTS.md руками" "Copy the contents of $BLOCK to the end of $PROJECT_DIR/AGENTS.md by hand")"
 fi
 
 # ── 7. Checks (commits are deliberate, separate actions) ─────────────────────
 say "7/7 Checks"
-say "   • $(L "self-check пам'яті" 'memory self-check') $(L '' '(Ukrainian output — Claude translates)'):"
+say "   • $(L "self-check пам'яті" 'memory self-check') $(L '' '(Ukrainian output — Codex translates)'):"
 if [ -n "$PAD_DIR" ]; then
   if (cd "$PROJECT_DIR" && bash "$PAD_DIR/scripts/self-check.sh" 2>&1 | sed 's/^/     /'); then
     ok "self-check: ✅ $(L 'СИСТЕМА ГОТОВА' 'SYSTEM READY')"
   else
-    bad "$(L "self-check пам'яті має червоні рядки (це очікувано на свіжій системі)" 'memory self-check has red rows (expected on a fresh system)')" "$(L "CLAUDE: заповни coordination/SETUP.md (visibility, mode), coordination/PROJECT_MAP.md (що в проєкті вже є), coordination/DECISIONS.md (3-5 рішень з полем «Чому»), секцію «Зони цього проєкту» в CLAUDE.md; закоміть і запуш; повтори bash $PAD_DIR/scripts/self-check.sh" "CLAUDE: fill in coordination/SETUP.md (visibility, mode), coordination/PROJECT_MAP.md (what already exists in the project), coordination/DECISIONS.md (3-5 decisions with a 'Why' field), the project-zones section of CLAUDE.md; commit and push; rerun bash $PAD_DIR/scripts/self-check.sh")"
+    bad "$(L "self-check пам'яті має червоні рядки (це очікувано на свіжій системі)" 'memory self-check has red rows (expected on a fresh system)')" "$(L "CLAUDE: заповни coordination/SETUP.md (visibility, mode), coordination/PROJECT_MAP.md (що в проєкті вже є), coordination/DECISIONS.md (3-5 рішень з полем «Чому»), секцію «Зони цього проєкту» в CLAUDE.md; закоміть і запуш; повтори bash $PAD_DIR/scripts/self-check.sh" "CODEX: fill in coordination/SETUP.md (visibility, mode), coordination/PROJECT_MAP.md (what already exists in the project), coordination/DECISIONS.md (3-5 decisions with a 'Why' field), the project-zones section of AGENTS.md; commit and push; rerun bash $PAD_DIR/scripts/self-check.sh")"
   fi
 fi
 

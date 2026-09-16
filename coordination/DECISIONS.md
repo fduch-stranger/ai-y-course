@@ -24,3 +24,8 @@
 **Decision:** Record the actual setup files only; no framework, application, database, or deployment is chosen.
 **Why:** The project was empty and the user requested a starter kit, not an application.
 **Alternatives:** A speculative application scaffold would exceed the request and create misleading memory.
+
+## 2026-09-16 — Make AGENTS.md the sole instruction source
+**Decision:** Keep all active rules and IMMUNE practices in AGENTS.md. CLAUDE.md is only a compatibility pointer required by the upstream memory checker.
+**Why:** Claude filenames obscured that the project uses Codex. One active source clarifies ownership while preserving files and compatibility.
+**Alternatives:** Deleting the legacy files would conflict with the owner's preservation instruction and break the original checker.

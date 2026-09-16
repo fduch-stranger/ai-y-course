@@ -2,8 +2,8 @@
 
 | Component | Purpose | Status | Canonical location |
 | --- | --- | --- | --- |
-| Codex instructions | Loads project rules and maps TZ workflows to Codex | Active | `AGENTS.md` |
-| Project rules | Project zones, memory discipline, IMMUNE | Active | `CLAUDE.md` |
+| Codex instructions | Canonical rules, project zones, IMMUNE, and TZ adaptations | Active | `AGENTS.md` |
+| Legacy checker pointer | Redirects to AGENTS.md; required by upstream memory checker | Compatibility only | `CLAUDE.md` |
 | Working memory | Decisions, map, backlog, lessons, workstreams, handoffs | Active | `coordination/` |
 | TZ skills | Draft, review, verify, end-to-end workflow | Installed; full critic stages optional/unavailable | `.agents/skills/` |
 | Bootstrap adapter | Non-destructive installation and setup check; NVIDIA optional | Active | `scripts/bootstrap-codex.sh` |
