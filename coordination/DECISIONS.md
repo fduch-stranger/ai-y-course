@@ -29,3 +29,8 @@
 **Decision:** Keep all active rules and IMMUNE practices in AGENTS.md. CLAUDE.md is only a compatibility pointer required by the upstream memory checker.
 **Why:** Claude filenames obscured that the project uses Codex. One active source clarifies ownership while preserving files and compatibility.
 **Alternatives:** Deleting the legacy files would conflict with the owner's preservation instruction and break the original checker.
+
+## 2026-09-16 — Keep the installed kit consistently English
+**Decision:** Translate installed skills, retained kit rules, script comments, and diagnostic output. Preserve original legal notices and legacy input-matching expressions. Preserve English project versions on bootstrap reruns.
+**Why:** Mixed upstream Ukrainian and English made the Codex adaptation harder to understand. English should cover both documentation and command output.
+**Alternatives:** Translating only chat summaries leaves files and terminal checks inconsistent. Removing legal notices or changing validation rules is unnecessary.

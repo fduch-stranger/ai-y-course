@@ -1,10 +1,10 @@
 ---
 name: tz-go
-description: The full TZ pipeline in ONE invocation. Asks the human exactly ONE question at the very start - answer the spec questions yourself, or let the agent answer them all (silence = agent answers) - and never blocks again. Either way it prints EVERY question with its recommended answer into the chat as soon as the list is complete, long before the code, so the human can read and overrule while work continues. Takes the user's dictation or rough draft and runs the whole cycle - isolate in a git worktree, read the project's rules and external memory, structure the input into a TZ that OPENS with Job-to-be-Done + measurable success criteria + explicit non-goals, interview ITSELF in batches of 5 questions with a self-qualification check between batches (the agent decides when it knows enough to commit to every decision; hard cap 15, verdict recorded in the TZ), run the full /tz-review 3-critic audit, falsify the spec's core hypothesis with the cheapest possible live-data test BEFORE the first line of code, then implement the final TZ phase by phase without stopping or asking, until every acceptance criterion is done (and /tz-verify confirms it, if available). The bet is explicit - ~80% of self-answered questions are right, and imperfect work delivered NOW beats perfect work blocked on a human. Invoke when the user dictates an idea and wants the whole cycle to run itself - "/tz-go", "зроби під ключ", "не питай - роби", "сам відповідай і працюй". Works in whatever language the user writes in (Ukrainian, English, any other).
+description: The full TZ pipeline in ONE invocation. Asks the human exactly ONE question at the very start - answer the spec questions yourself, or let the agent answer them all (silence = agent answers) - and never blocks again. Either way it prints EVERY question with its recommended answer into the chat as soon as the list is complete, long before the code, so the human can read and overrule while work continues. Takes the user's dictation or rough draft and runs the whole cycle - isolate in a git worktree, read the project's rules and external memory, structure the input into a TZ that OPENS with Job-to-be-Done + measurable success criteria + explicit non-goals, interview ITSELF in batches of 5 questions with a self-qualification check between batches (the agent decides when it knows enough to commit to every decision; hard cap 15, verdict recorded in the TZ), run the full /tz-review 3-critic audit, falsify the spec's core hypothesis with the cheapest possible live-data test BEFORE the first line of code, then implement the final TZ phase by phase without stopping or asking, until every acceptance criterion is done (and /tz-verify confirms it, if available). The bet is explicit - ~80% of self-answered questions are right, and imperfect work delivered NOW beats perfect work blocked on a human. Invoke when the user dictates an idea and wants the whole cycle to run itself - "/tz-go", "do it end to end", "don't ask - just do it", "answer the questions yourself and get to work". Works in whatever language the user writes in (Ukrainian, English, any other).
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
-# TZ Go — від надиктовки до виконаного ТЗ без жодної зупинки
+# TZ Go — from dictation to an implemented TZ without stopping
 
 ## Language
 
@@ -13,381 +13,394 @@ draft, or the first message; if it is mixed or unclear, do not ask — use Engli
 Everything user-facing follows that language: the TZ document, the questions and their
 recommended answers, the review journal, progress lines, the final report, and any commit
 messages you write on the user's behalf. Keep verbatim: command names (`/tz-go`), file
-names, code, config keys, and the code words — «ФІНІШ», "FINISH" and "DONE" are the SAME
-code word in any language. The Ukrainian text blocks inside this skill are templates of
+names, code, config keys, and the code words — "FINISH", "DONE", and their Ukrainian equivalent are the SAME
+code word in any language. The text blocks inside this skill are templates of
 MEANING, not strings to paste: render them faithfully in the user's language. Prompts sent
 to critic models may stay in English (models handle it best), but every finding you quote
 back to the user is translated. Never switch language mid-run because a source file or a
 kit template happens to be in another language.
 
-Об'єднує весь конвеєр в один виклик:
+Combines the entire pipeline in one invocation:
 
 ```
-надиктовка → [Фаза 0: ОДНЕ питання про режим + worktree + правила проєкту]
-           → [Фаза 1: /tz-draft — JTBD + критерії успіху + само-інтерв'ю]
-           → [Фаза 1.5: УСІ питання з рекомендованими відповідями — у чат ОДНИМ блоком]
-           → [Фаза 2: /tz-review — 3 незалежні критики, повний протокол]
-           → [Фаза 2.5: A0-фальсифікація головної гіпотези на живих даних]
-           → [Фаза 3: реалізація до кінця, без зупинок і перепитувань]
-           → [Фаза 4: /tz-verify (якщо доступний) + фінальний звіт]
+dictation → [Phase 0: ONE mode question + worktree + project rules]
+          → [Phase 1: /tz-draft — JTBD + success criteria + self-interview]
+          → [Phase 1.5: ALL questions with recommended answers — ONE block in chat]
+          → [Phase 2: /tz-review — 3 independent critics, full protocol]
+          → [Phase 2.5: A0 falsification of the core hypothesis on live data]
+          → [Phase 3: implementation to completion, without stops or follow-up questions]
+          → [Phase 4: /tz-verify (if available) + final report]
 ```
 
-Малі скіли (`/tz-draft`, `/tz-review`, `/tz-verify`) лишаються самостійними — цей скіл
-не замінює їх, а оркеструє. Коли ТЗ вже є і потрібен лише аудит — `/tz-review`.
-`/tz-go` — для дефолтного робочого циклу: «я виговорився — далі все сам, я потім
-перечитаю». Хочеш відповідати на питання власноруч — це тепер режим B всередині
-самого `/tz-go` (Фаза 0), окремо кликати `/tz-draft` заради цього не треба.
+The smaller skills (`/tz-draft`, `/tz-review`, `/tz-verify`) remain standalone — this skill
+orchestrates them rather than replacing them. When a TZ already exists and only an audit
+is needed, use `/tz-review`. `/tz-go` is for the default workflow: "I've said my piece —
+take it from here; I'll read it later." If you want to answer questions yourself, that is
+now mode B within `/tz-go` itself (Phase 0); no separate `/tz-draft` invocation is needed.
 
-## Філософія: 80% вгаданих відповідей зараз > 100% ідеальних потім
+## Philosophy: 80% correct answers now > 100% perfect answers later
 
-Людина, яка мусить відповісти на 10 питань, — це заблокований конвеєр. Ставка цього
-скіла, сформульована користувачем явно: агент вгадує відповіді правильно з імовірністю
-~80%, і цінність «він щось РОБИТЬ за цей час» вища за цінність ідеальних відповідей,
-на які довелося чекати. Тому:
+A human who has to answer 10 questions is a blocked pipeline. The bet behind this skill,
+explicitly stated by the user: the agent guesses answers correctly with ~80% probability,
+and the value of "it is DOING something in the meantime" exceeds the value of perfect
+answers that require waiting. Therefore:
 
-- **Рівно ОДНЕ питання чекає відповіді — перше, про режим роботи** (Фаза 0). Усе
-  решта агент вирішує сам. Це свідомий виняток із «нічого не питати»: вибір режиму
-  коштує одне слово, а ціна вгадування тут висока — людина, яка хотіла відповідати
-  сама, інакше отримає готове ТЗ із чужими рішеннями.
-- **Усі питання з рекомендованими відповідями виводяться в чат ОДРАЗУ**, щойно
-  сформовані (Фаза 1.5) — а не наприкінці роботи. Поки агент іде далі, людина вже
-  читає і думає. Ховати їх до фінального звіту означає віддати людині рішення тоді,
-  коли на них уже стоїть готовий код.
-- Кожна само-відповідь фіксується в ТЗ з позначкою **«✅ авто-прийнято (tz-go)»** —
-  користувач потім перечитає і, якщо щось не так, внесе правку. Помилка коштує правку;
-  очікування коштує весь конвеєр.
-- Зупинка дозволена рівно в одному випадку — **жорсткий зовнішній блокер**: реальні
-  гроші, перша комунікація з реальною зовнішньою людиною, клік у чужому акаунті,
-  відсутній секрет/токен. Такий пункт НЕ зупиняє решту роботи: агент виносить його в
-  чергу «Потрібно від людини» у фінальному звіті, проєктує v1 так, щоб максимум роботи
-  не залежав від нього, і доводить усе інше до кінця.
+- **Exactly ONE question waits for an answer — the first, about the operating mode**
+  (Phase 0). The agent decides everything else. This is a deliberate exception to
+  "ask nothing": choosing a mode takes one word, while guessing wrong is costly —
+  someone who wanted to answer personally would otherwise receive a finished TZ
+  containing someone else's decisions.
+- **All questions with recommended answers appear in chat IMMEDIATELY** once
+  formulated (Phase 1.5) — not at the end of the work. While the agent moves on, the
+  human is already reading and thinking. Hiding them until the final report presents
+  decisions to the human only after code has already been built on them.
+- Each self-answer is recorded in the TZ with the label **"✅ auto-accepted (tz-go)"** —
+  the user can read it later and amend anything wrong. A mistake costs an edit;
+  waiting costs the entire pipeline.
+- Stopping is allowed in exactly one case — **a hard external blocker**: real money,
+  first contact with a real external person, a click in someone else's account,
+  a missing secret/token. Such an item does NOT stop the remaining work: the agent
+  puts it in the "Needed from the human" queue in the final report, designs v1 so
+  that as much work as possible is independent of it, and completes everything else.
 
-## Фаза 0 — ОДНЕ питання про режим, потім ізоляція і контекст
+## Phase 0 — ONE mode question, then isolation and context
 
-**Найперша дія скіла — це питання. Єдине за весь прогін.** Постав його ДО будь-якої
-іншої роботи, одним коротким повідомленням, і одразу поясни правило економії
-(блок нижче — український оригінал; вимовляй його мовою користувача, див. «Language»;
-«ФІНІШ» = "FINISH" = "DONE"):
+**The skill's very first action is a question. The only one in the entire run.** Ask it
+BEFORE any other work, in one short message, and immediately explain the economy rule
+(the block below is a template; say it in the user's language, see "Language";
+"FINISH" = "DONE"):
 
 ```
-Перед стартом — одне питання, більше не потурбую.
+One question before we start — I won't keep interrupting you.
 
-Я зараз розберу твою надиктовку і складу список питань, на яких тримається ТЗ.
-Як із ними вчинити?
+I'll now unpack your dictation and compile the questions the TZ depends on.
+How should we handle them?
 
-  A) Відповідаю сам на всі — ти нічого не робиш, я йду до кінця.
-     Усі мої відповіді ти все одно побачиш одразу і зможеш перекреслити.
-  B) Відповідаєш ти — я виведу всі питання з рекомендаціями і зачекаю.
+  A) I answer all of them — you do nothing, and I work through to completion.
+     You'll still see all my answers immediately and can override them.
+  B) You answer — I'll show all questions with recommendations and wait.
 
-Не відповіси — беру A і працюю.
+If you don't reply, I'll take A and get to work.
 
-⚠️ Важливо для економії: коли писатимеш мені щось (правки, відповіді, уточнення) —
-збирай усе в ОДНЕ повідомлення. Кожне окреме повідомлення змушує перечитати всю
-історію розмови наново, і десять дрібних реплік коштують у рази дорожче за одну
-довгу. Це стосується і відповідей на питання, і будь-яких пізніших правок.
+⚠️ To save tokens: whenever you write to me (edits, answers, clarifications),
+collect everything in ONE message. Each separate message requires rereading the
+entire conversation history, and ten short replies cost several times more than
+one long one. This applies to answers to questions and any later corrections.
 ```
 
-Правила режимів:
-- **Режим A (авто, дефолт).** Питання й відповіді все одно виводяться в чат
-  (Фаза 1.5), але агент не чекає — одразу йде далі. Мовчання людини = A.
-- **Режим B (людина відповідає).** Після виводу питань агент **чекає одне**
-  повідомлення з відповідями. Людина може відповісти не на всі — пропущені беруть
-  рекомендовану відповідь. Слово «ФІНІШ» = прийняти всі рекомендації і працювати далі.
-- Якщо людина вже написала в запиті «не питай», «роби сам», «під ключ» — питання про
-  режим НЕ став узагалі, це вже відповідь A.
+Mode rules:
+- **Mode A (automatic, default).** Questions and answers still appear in chat
+  (Phase 1.5), but the agent does not wait — it moves on immediately. Human silence = A.
+- **Mode B (human answers).** After displaying the questions, the agent **waits for one**
+  message with answers. The human need not answer every question — skipped ones take
+  the recommended answer. "FINISH" = accept all recommendations and continue working.
+- If the request already says "don't ask", "do it yourself", or "end to end" — do NOT
+  ask the mode question at all; that is already an answer of A.
 
-1. **Git worktree.** Якщо сесія ще не ізольована — створи окремий worktree до першої
-   правки (штатний інструмент харнеса, якщо є; інакше `git worktree add`). Гілка
-   `feat/{slug}`. Здача — через push + Pull Request після зелених перевірок.
-   Незамерджену роботу можна знищити лише за явним словом «discard» від людини.
-2. **Правила проєкту.** Прочитай усе, що проєкт вважає своїми законами, ПЕРЕД тим як
-   специфікувати: `CLAUDE.md` / `AGENTS.md` (корінь + зачеплені підтеки), файли
-   канону (`.ai-context/`, `docs/`, `coordination/` — DECISIONS / PRODUCT_MAP /
-   BACKLOG / MISTAKES, якщо існують).
-3. **Зовнішня пам'ять.** Якщо у проєкту є система пам'яті (memory-файли, семантичний
-   пошук, дайджести минулих сесій) — запитай її про тему задачі. Мета — «звірка
-   анти-кіл»: чи X вже існує, чи вже вирішено інакше, чи свідомо відхилено. Вердикт
-   звірки — першим рядком звіту Фази 1 («X уже є отам» / «X відхилено тоді-то, бо…» /
-   «в пам'яті чисто, будую»).
+1. **Git worktree.** If the session is not yet isolated, create a separate worktree
+   before the first edit (use the harness's built-in tool if available; otherwise
+   `git worktree add`). Branch: `feat/{slug}`. Deliver through push + Pull Request
+   after checks pass. Unmerged work may be destroyed only if the human explicitly
+   says "discard".
+2. **Project rules.** Read everything the project treats as its laws BEFORE writing
+   the specification: `CLAUDE.md` / `AGENTS.md` (root + affected subdirectories),
+   canonical files (`.ai-context/`, `docs/`, `coordination/` — DECISIONS / PRODUCT_MAP /
+   BACKLOG / MISTAKES, if they exist).
+3. **External memory.** If the project has a memory system (memory files, semantic
+   search, summaries of past sessions), query it about the task. The goal is to avoid
+   going in circles: does X already exist, was it decided differently, or was it
+   deliberately rejected? Put the verdict first in the Phase 1 report ("X already
+   exists there" / "X was rejected on this date because…" / "nothing in memory; building").
 
-## Фаза 1 — ТЗ: структурувати, поставити собі питання, відповісти собі
+## Phase 1 — TZ: structure it, ask yourself questions, answer them yourself
 
-Виконуй протокол `/tz-draft` (Step 0 «Listen and structure» і Step 4 «Produce the
-strengthened TZ» — включно з повним coverage checklist та вшитою worktree-інструкцією
-виконавцю), але **інтерв'ю з користувачем замінене на само-інтерв'ю**:
+Follow the `/tz-draft` protocol (Step 0 "Listen and structure" and Step 4 "Produce the
+strengthened TZ" — including the full coverage checklist and the embedded worktree
+instruction for the implementer), but **replace the user interview with a self-interview**:
 
-1. **JTBD-гейт — найперший і обов'язковий.** ТЗ ПОЧИНАЄТЬСЯ з блоку:
+1. **The JTBD gate comes first and is mandatory.** The TZ OPENS with this block:
 
    ```
    ## Job-to-be-Done
-   Коли [ситуація], [хто] хоче [що зробити], щоб [бізнес-результат].
+   When [situation], [who] wants to [do what], so that [business outcome].
 
-   ## Критерії успіху
-   1. [вимірюваний критерій — цифра або спостережуваний наслідок]
+   ## Success criteria
+   1. [measurable criterion — a number or observable outcome]
    2. …
 
-   ## Не-цілі: чого ми ТОЧНО НЕ робимо
-   1. [явна відмова — те, що спокусливо додати, але ми свідомо не додаємо, і чому одним рядком]
+   ## Non-goals: what we are DEFINITELY NOT doing
+   1. [explicit exclusion — something tempting to add that we deliberately omit, with a one-line reason]
    2. …
    ```
 
-   Ніяке ТЗ не вважається готовим без чітко сформульованого JTBD, вимірюваних
-   критеріїв успіху і явних не-цілей. **Не-цілі — це не «поки що відкладене», а
-   межа задачі**: перелік того, що найімовірніше почне розповзатися в scope під час
-   реалізації, і що ти зобов'язуєшся НЕ робити (детальніший «Поза scope v1» у тілі
-   ТЗ доповнює цей блок, але 2-5 головних відмов стоять тут, поруч із JTBD, де їх
-   неможливо не побачити). Кожна вимога в ТЗ мусить простежуватися до JTBD; вимога,
-   що не служить жодній заявленій роботі, — ріжеться в не-цілі або «Поза scope v1».
-   Це не формальність: саме проти JTBD, критеріїв успіху і не-цілей критики Фази 2
-   перевірятимуть увесь документ (категорія 0 чек-листа `/tz-review`).
+   No TZ is ready without a clearly stated JTBD, measurable success criteria, and
+   explicit non-goals. **Non-goals are the task boundary, not "deferred for now"**:
+   a list of the things most likely to creep into scope during implementation,
+   which you commit NOT to do (the more detailed "Outside v1 scope" section in the
+   TZ body complements this block, but the 2-5 main exclusions belong here beside
+   JTBD, where they cannot be missed). Every requirement in the TZ must trace back
+   to JTBD; a requirement that serves none of the stated jobs is cut into non-goals
+   or "Outside v1 scope". This is not a formality: the Phase 2 critics will check the
+   entire document against JTBD, success criteria, and non-goals (category 0 of the
+   `/tz-review` checklist).
 
-2. **Само-інтерв'ю батчами по 5 — із самокваліфікацією між батчами.** Кількість
-   питань НЕ фіксована (жодних «10, бо цифра кругла») — її визначає перевірка
-   достатності, і рішення «досить» приймає сам агент:
+2. **Self-interview in batches of 5 — with self-qualification between batches.**
+   The number of questions is NOT fixed (no "10 because it's a round number") —
+   a sufficiency check determines it, and the agent decides when enough is enough:
 
-   - **Батч 1 (5 питань):** найдорожчі за ціною неправильного вгадування прогалини —
-     ті самі питання, які `/tz-draft` поставив би користувачу. Формат кожного —
-     answer-first із негайною власною відповіддю:
+   - **Batch 1 (5 questions):** gaps with the highest cost of guessing wrong —
+     the same questions `/tz-draft` would ask the user. Each uses an answer-first
+     format with an immediate self-answer:
 
      ```
-     Питання N: {питання}
-     Чому важливо: {що зламається в бізнесі при неправильній відповіді}
-     Варіанти: a) … b) … c) …
-     ✅ Відповідаю: {літера}) — {чому саме вона найправильніша: 1-3 речення, з опорою
-     на надиктоване / кодову базу / правила проєкту}
+     Question N: {question}
+     Why it matters: {what breaks in the business if the answer is wrong}
+     Options: a) … b) … c) …
+     ✅ My answer: {letter}) — {why this is the best choice: 1-3 sentences grounded
+     in the dictation / codebase / project rules}
      ```
 
-   - **Самокваліфікація після КОЖНОГО батчу** — чесна відповідь собі на одне
-     питання: «Чи можу я тепер прийняти ВСІ рішення цього ТЗ з високою впевненістю —
-     чи лишились зони, де я вгадуватиму наосліп?» Перелічи туманні зони поіменно.
-     Нема туманних зон → інтерв'ю завершене. Є → наступний батч до 5 питань,
-     націлений РІВНО в ці зони (не «ще п'ять про всяк випадок»).
-   - **Стеля — 15 питань (3 батчі).** Якщо після 15 туманні зони лишились — це
-     сигнал не «питати далі», а що задача містить справжні бізнес-розвилки: вони
-     йдуть у «⚠️ ПРИПУЩЕННЯ» та чергу «Потрібно від людини», а v1 проєктується так,
-     щоб мінімально від них залежати.
-   - **Вердикт самокваліфікації записується в ТЗ** (у розділ само-інтерв'ю):
-     «Самокваліфікація: впевненість {висока/достатня}, {N} питань у {K} батчах;
-     туманні зони: {немає / перелік → ⚠️}». Це аудиторський слід рішення
-     «чому агент зупинився саме тут» — користувач має бачити не лише відповіді,
-     а й момент, коли агент визнав себе готовим.
+   - **Self-qualification after EVERY batch** — honestly answer one question:
+     "Can I now make ALL decisions in this TZ with high confidence — or are there
+     areas where I would still be guessing blindly?" Name the uncertain areas.
+     None remain → the interview is complete. Some remain → another batch of up to
+     5 questions targeting EXACTLY those areas (not "five more just in case").
+   - **The ceiling is 15 questions (3 batches).** If uncertainties remain after 15,
+     the signal is not "keep asking" but that the task contains real business
+     decision points: put them in "⚠️ ASSUMPTIONS" and the "Needed from the human"
+     queue, and design v1 to depend on them as little as possible.
+   - **Record the self-qualification verdict in the TZ** (in the self-interview section):
+     "Self-qualification: confidence {high/sufficient}, {N} questions in {K} batches;
+     uncertain areas: {none / list → ⚠️}." This is the audit trail for "why the agent
+     stopped at this point" — the user must see both the answers and the moment
+     the agent judged itself ready.
 
-   Останнім питанням останнього батчу — завжди **pre-mortem**: «місяць після
-   запуску, фіча провалилась — найімовірніша причина?» → результат у «Відкриті
-   ризики».
+   The last question of the last batch is always a **pre-mortem**: "One month after
+   launch, the feature has failed — what is the most likely reason?" → put the result
+   in "Open risks".
 
-3. **Куди це кладеться.** Повний блок само-інтерв'ю — у **супровідному файлі поруч**
-   (`TZ_{slug}_self_interview.md`) або окремим розділом у ТЗ; у самому ТЗ у кожного
-   правила, що виросло з відповіді, — коротке посилання на номер питання. Після
-   v2/v3-переписувань ТЗ (ітерації рев'ю) повний блок у тілі документа роздуває
-   файл — тоді в ТЗ лишається посилання на супровідний файл чи git-історію v1, а не
-   копія. Мета незмінна: користувач може перечитати і перекреслити будь-яку
-   відповідь однією правкою.
-   Кожне правило в ТЗ, що виросло з само-відповіді, позначене «✅ авто-прийнято
-   (tz-go)». Те, на що чесно НЕ можеш відповісти навіть собі (справжня бізнес-розвилка
-   з дорогою ціною помилки), — «⚠️ ПРИПУЩЕННЯ» у «Відкриті ризики» + у чергу
-   «Потрібно від людини» фінального звіту. Таких пунктів типово 0-2; десять
-   «⚠️ ПРИПУЩЕНЬ» означають, що ти ухиляєшся від ставки цього скіла.
+3. **Where it goes.** Put the full self-interview block in an **adjacent companion file**
+   (`TZ_{slug}_self_interview.md`) or a separate section of the TZ; in the TZ itself,
+   give each rule derived from an answer a short reference to the question number.
+   After v2/v3 rewrites of the TZ (review iterations), keeping the full block in
+   the document body bloats the file — then retain a link to the companion file or
+   the v1 git history instead of a copy. The goal stays the same: the user can read
+   and override any answer with a single edit.
+   Label every rule in the TZ derived from a self-answer "✅ auto-accepted (tz-go)".
+   Anything you honestly CANNOT answer even for yourself (a real business decision
+   with a high cost of error) goes under "⚠️ ASSUMPTIONS" in "Open risks" and in the
+   final report's "Needed from the human" queue. There are typically 0-2 such items;
+   ten "⚠️ ASSUMPTIONS" means you are avoiding the bet this skill makes.
 
-4. **Технічні рішення** — як завжди у `/tz-draft`: ніколи не питаються навіть у себе
-   в форматі «варіантів для людини», просто вирішуються і записуються в розділ
-   «Технічні рішення за замовчуванням» (перший рядок — worktree-інструкція, без
-   винятків).
+4. **Technical decisions** — as always in `/tz-draft`: never ask them, even of
+   yourself, as "options for the human"; simply decide and record them in the
+   "Default technical decisions" section (the first line is the worktree
+   instruction, without exceptions).
 
-5. **Тест регенерованості (IMMUNE «Intent before implementation», додано 01.09.2026).**
-   Перед тим як вважати ТЗ готовим, постав собі питання по кожному модулю, який воно
-   чіпає: «якщо цей файл видалити і переписати ЛИШЕ за ТЗ + доками + тестами — що
-   зламається?» Відповідь «усе» означає, що знання живе в коді, а не в ТЗ, — допиши
-   в ТЗ саме те, чого бракує для регенерації (правила, інваріанти, формати даних).
+5. **Regenerability test (IMMUNE "Intent before implementation", added 01.09.2026).**
+   Before treating the TZ as ready, ask yourself about every module it touches:
+   "If this file were deleted and rewritten using ONLY the TZ + docs + tests,
+   what would break?" The answer "everything" means knowledge lives in the code
+   rather than the TZ — add exactly what is missing for regeneration (rules,
+   invariants, data formats) to the TZ.
 
-Після видачі ТЗ — НЕ чекай підтвердження. Одразу Фаза 2.
+After producing the TZ, do NOT wait for confirmation. Move straight to Phase 2.
 
-## Фаза 1.5 — УСІ питання й відповіді в чат, одним блоком
+## Phase 1.5 — ALL questions and answers in chat, in one block
 
-Щойно само-інтерв'ю завершене (самокваліфікація сказала «досить») — **виведи весь
-список у чат одразу**, ще до аудиту й до першого рядка коду. Не наприкінці роботи:
-наприкінці правити рішення пізно, бо на них уже стоїть код.
+As soon as the self-interview is complete (self-qualification says "enough"), **show
+the entire list in chat immediately**, before the audit and before the first line
+of code. Not at the end: changing decisions then is too late, because code has
+already been built on them.
 
-Формат — компактний, щоб 10-15 питань читалися за хвилину:
+Use a compact format so 10-15 questions can be read in a minute:
 
 ```
-📋 Питання, на яких тримається це ТЗ ({N} шт.) — мої відповіді вже прийняті
+📋 Questions this TZ depends on ({N} total) — my answers are already accepted
 
-1. {питання} → ✅ {обрана відповідь}
-   чому: {одне речення}
+1. {question} → ✅ {chosen answer}
+   why: {one sentence}
 2. …
 
-⚠️ Не зміг вирішити за тебе ({M} шт.) — у ТЗ позначені як ПРИПУЩЕННЯ:
-• {питання} — {чому це справжня розвилка, а не вгадування}
+⚠️ I could not decide for you ({M} total) — marked as ASSUMPTIONS in the TZ:
+• {question} — {why this is a real decision point rather than a guess}
 
-Далі: [режим A] йду в аудит і реалізацію, нічого не чекаю.
-      [режим B] чекаю на твої відповіді ОДНИМ повідомленням.
+Next: [mode A] I'll proceed to audit and implementation without waiting.
+      [mode B] I'll wait for your answers in ONE message.
 
-Хочеш щось змінити — скопіюй номер і напиши свій варіант. Усі правки збирай
-в ОДНЕ повідомлення: кожне окреме коштує перечитування всієї розмови.
+To change anything, copy its number and write your alternative. Collect all edits
+in ONE message: each separate message costs a reread of the entire conversation.
 ```
 
-Правила виводу:
-- **Усе одним повідомленням**, а не по питанню. Дроблення тут коштує рівно те саме,
-  що ми забороняємо людині.
-- **Рекомендована відповідь показується завжди** — і в режимі A, і в B. У B це не
-  «підказка», а дефолт: пропущене питання бере її автоматично.
-- Якщо питань більше 15 — це сигнал, що задача містить справжні бізнес-розвилки;
-  не роздувай список, винеси надлишок у ПРИПУЩЕННЯ.
-- У режимі A після виводу **не роби паузи** — наступний рядок звіту вже про Фазу 2.
-  Людина читає паралельно; якщо вона пізніше принесе правку, вона потрапить у ТЗ
-  тим самим механізмом, що й будь-яка інша правка.
+Display rules:
+- **Everything in one message**, not one question at a time. Splitting it up costs
+  exactly the same as the behavior we ask the human to avoid.
+- **Always show the recommended answer**, in both modes A and B. In B it is not
+  a "hint" but the default: a skipped question takes it automatically.
+- More than 15 questions signals real business decision points in the task;
+  do not expand the list — move the excess to ASSUMPTIONS.
+- In mode A, **do not pause** after displaying the list — the next report line is
+  already about Phase 2. The human reads in parallel; if they send an amendment
+  later, incorporate it into the TZ through the same mechanism as any other edit.
 
-## Фаза 2 — Повний аудит /tz-review
+## Phase 2 — Full /tz-review audit
 
-Запусти протокол `/tz-review` на щойно створеному ТЗ — повністю: 3 незалежні критики
-різних вендорів, чек-лист від **категорії 0 (Job-to-be-Done і критерії успіху)** до 11,
-3 ітерації, grounding, фільтри цитат і впевненості, синтез оркестратором.
+Run the `/tz-review` protocol on the newly created TZ in full: 3 independent critics
+from different vendors, the checklist from **category 0 (Job-to-be-Done and success
+criteria)** through 11, 3 iterations, grounding, quotation and confidence filters,
+and synthesis by the orchestrator.
 
-**Як запускати критиків — через диспетчер паку** (`lib/llm-critic.sh` +
-`providers.json`), не ручними викликами CLI. Якщо все ж кличеш CLI напряму, ось
-граблі, зібрані першим бойовим прогоном (кожна коштувала реального часу):
+**Run the critics through the kit's dispatcher** (`lib/llm-critic.sh` +
+`providers.json`), not manual CLI calls. If you do call a CLI directly, here are
+pitfalls collected during the first real run (each cost real time):
 
-- **Промпт — ТІЛЬКИ через stdin з файлу.** Великий ТЗ (десятки KB) як argv валить
-  `claude -p` з «Argument list too long» і мовчки калічить не-ASCII.
-- **gemini** у headless-режимі потребує довіри до workspace
-  (`GEMINI_CLI_TRUST_WORKSPACE=true` або `--skip-trust` — залежно від версії); на
-  429 no-capacity топової моделі не ретрай у ту саму — переходь на `-m *-flash`.
-- **Фонові запуски — тільки з абсолютними шляхами.** Відносний `cd` у фоновому
-  шелі = тихий провал усіх трьох критиків з порожніми файлами відповідей.
+- **Prompts ONLY through stdin from a file.** Passing a large TZ (tens of KB) as
+  argv crashes `claude -p` with "Argument list too long" and silently corrupts non-ASCII.
+- **gemini** in headless mode requires workspace trust
+  (`GEMINI_CLI_TRUST_WORKSPACE=true` or `--skip-trust`, depending on the version);
+  on a 429 no-capacity response from the top model, do not retry the same model —
+  switch to `-m *-flash`.
+- **Background runs require absolute paths.** A relative `cd` in a background
+  shell = silent failure of all three critics with empty response files.
 
-**Ослаблене рев'ю — кажи гучно (додано 01.09.2026).** Перед запуском критиків —
-`llm-critic.sh --smoke-all`. Три живі слоти різних вендорів → штатно. Два живі різних
-вендорів → продовжуй, але кожен вердикт і фінальний звіт несуть банер
-«⚠️ РЕВ'Ю ОСЛАБЛЕНЕ: працювало 2 критики з 3 (хто впав)». Менше двох, або вцілілі —
-одного вендора → СТОП до полагодження `providers.json`: одна модель, що перевіряє сама
-себе, — це ехо, а не рев'ю, і мовчазне продовження тут гірше за відсутність рев'ю.
+**Degraded review — say so clearly (added 01.09.2026).** Before running the critics,
+run `llm-critic.sh --smoke-all`. Three live slots from different vendors → normal operation.
+Two live slots from different vendors → continue, but every verdict and the final report
+must carry the banner "⚠️ DEGRADED REVIEW: 2 of 3 critics ran (identify the failed one)".
+Fewer than two, or surviving critics from the same vendor → STOP until `providers.json`
+is fixed: one model checking itself is an echo, not a review, and silently continuing
+here is worse than having no review.
 
-**Відхилення від стандартного `/tz-review` — два:**
+**Two deviations from the standard `/tz-review`:**
 
-1. **Автономність рішень**: усе, що протокол каже «flag for user» / «surface to
-   user», вирішує оркестратор сам, за тими ж правилами синтезу (security-критика
-   приймається за замовчуванням; архітектурні альтернативи, що міняють scope,
-   приймаються або відхиляються З ПИСЬМОВИМ обґрунтуванням у RECONCILIATION.md і у
-   changelog ТЗ). Користувач читає це постфактум — тому кожне таке рішення мусить
-   бути знайдене за 10 секунд: секція «Рішення, які я прийняв за тебе» у фінальному
-   звіті з посиланнями.
-2. **Ітерація 3 — verification-режим.** Iter1-2 — повний чек-лист як у протоколі.
-   Iter3 критики проходять ТІ САМІ 12 категорій (нічого не звужуємо — анти-патерн
-   `/tz-review` лишається в силі), але звітують ЛИШЕ блокери: «вердикт CLEAR або
-   нумерований список BLOCKER-ів». Перевірено бойовим прогоном 2026-08-11: такий
-   формат третьої ітерації зловив 4 справжні блокери, які два повні проходи
-   пропустили — щільність сигналу росте, коли зникає обов'язок заповнювати всі
-   категорії текстом.
+1. **Autonomous decisions**: whenever the protocol says "flag for user" / "surface to
+   user", the orchestrator decides itself under the same synthesis rules (accept
+   security criticism by default; accept or reject architectural alternatives
+   that change scope WITH WRITTEN justification in RECONCILIATION.md and the TZ
+   changelog). The user reads this after the fact, so every such decision must be
+   findable within 10 seconds: include a "Decisions I made for you" section with
+   links in the final report.
+2. **Iteration 3 uses verification mode.** Iter1-2 use the full checklist as in the
+   protocol. In Iter3, critics cover THE SAME 12 categories (do not narrow anything —
+   the `/tz-review` anti-pattern still applies), but report ONLY blockers: "a CLEAR
+   verdict or a numbered list of BLOCKERs". Validated in a real run on 2026-08-11:
+   this third-iteration format caught 4 real blockers missed by two full passes —
+   signal density rises when there is no obligation to fill every category with text.
 
-**Звітність:** один рядок прогресу після кожної ітерації («iter 2/3: 4 знахідки
-прийнято, 1 відхилено, ТЗ v3») + розгорнутіший звіт на межі КОЖНОЇ фази скіла
-(0→1→2→2.5→3→4) — за 3+ годин автономної роботи людина має бачити, де конвеєр.
+**Reporting:** one progress line after each iteration ("iter 2/3: 4 findings
+accepted, 1 rejected, TZ v3") + a fuller report at the boundary of EVERY skill phase
+(0→1→2→2.5→3→4) — during 3+ hours of autonomous work, the human must see where the pipeline is.
 
-## Фаза 2.5 — A0-фальсифікація головної гіпотези (перед першим рядком коду)
+## Phase 2.5 — A0 falsification of the core hypothesis (before the first line of code)
 
-Після фінальної версії ТЗ і ДО реалізації — **найдешевший ручний тест головної
-гіпотези ТЗ на живих даних**. Сформулюй: «це ТЗ має цінність, лише якщо {ключове
-правило/механізм} на реальних даних дає {очікуване}» — і перевір це руками за
-15-30 хвилин: SQL до живої бази, прогін правила на 5-10 реальних кейсах, ручна
-симуляція головного сценарію. Без коду, без моків.
+After the final TZ version and BEFORE implementation, run **the cheapest manual test
+of the TZ's core hypothesis on live data**. State: "This TZ has value only if {key
+rule/mechanism} produces {expected result} on real data" — and check it manually in
+15-30 minutes: SQL against a live database, applying the rule to 5-10 real cases,
+or manually simulating the main scenario. No code, no mocks.
 
-- Гіпотеза підтвердилась → один рядок у ТЗ («A0: підтверджено на {дані}») і вперед.
-- Гіпотеза впала або дала несподіване → це НЕ провал, це найдешевша знахідка
-  конвеєра: поправ дизайн у ТЗ (changelog!), за потреби — точковий четвертий прохід
-  критиків по зміненій секції, і лише тоді реалізація.
+- Hypothesis confirmed → one line in the TZ ("A0: confirmed on {data}") and move on.
+- Hypothesis falsified or unexpected result → this is NOT a failure; it is the
+  pipeline's cheapest finding: correct the design in the TZ (changelog!), run a
+  focused fourth critic pass on the changed section if needed, and only then implement.
 
-Походження: перший бойовий прогін (2026-08-11) — саме такий тест зловив ваду
-дизайну (правило перетинів виключало найцінніший кейс) за 30 хвилин до першого
-рядка коду. Три критики на трьох ітераціях цього не побачили: вони читали ТЗ, а
-не дані. Мок-тести цього класу помилок не ловлять у принципі — сховище повертає
-те, що йому скажеш.
+Origin: in the first real run (2026-08-11), this exact kind of test caught a design
+flaw (the intersection rule excluded the most valuable case) in 30 minutes, before
+the first line of code. Three critics across three iterations missed it: they read
+the TZ, not the data. Mock tests fundamentally cannot catch this class of error —
+the store returns whatever you tell it to return.
 
-## Фаза 3 — Реалізація до кінця
+## Phase 3 — Implementation to completion
 
-Одразу після A0 — впровадження фінальної версії ТЗ. Без питання «починати?» — це і
-є замовлення.
+Immediately after A0, implement the final TZ version. Do not ask "shall I start?" —
+that is the assignment.
 
-- Фаза за фазою в порядку з ТЗ; кожна фаза закінчується чимось працюючим; коміти
-  часті, push гілки — регулярний.
-- **Самодостатні модулі — виноси на окремий процес/акаунт, якщо середовище це
-  вміє.** Якщо в системі є штатний механізм offload-у (напр. глобальний скіл
-  `/offload` на другий акаунт, окремий headless-процес CLI) — реалізацію модулів,
-  які описуються самодостатнім промптом (кодогенерація + тести, масові
-  трансформації), віддавай туди; сесія-оркестратор читає результат, гейтить і
-  мерджить. Немає такого механізму — роби сам, це не блокер.
-- **Нове питання посеред роботи** (а вони будуть) → те саме правило, що у Фазі 1:
-  постав собі, відповідай сам answer-first-форматом, зафіксуй у changelog ТЗ, працюй
-  далі. НІКОЛИ не зупиняйся з питанням до користувача, якщо це не жорсткий зовнішній
-  блокер (гроші / зовнішня людина / чужий акаунт / відсутній секрет).
-- **Семантика циклу:** після кожної фази — звірка з ТЗ (які AC вже закриті, які ні) і
-  негайний перехід до наступної. Стоп лише у двох станах: (а) всі AC виконані,
-  (б) лишились тільки пункти з черги «Потрібно від людини». Стан «зробив 4/6 і
-  запитаю» заборонений — він читається як «все готово» і губить роботу.
-- Зелені перевірки проєкту (lint / typecheck / build / тести — те, що проєкт вважає
-  своїм гейтом) — перед PR. Червоне не здається ніколи.
-- **Чек проєкцій перед PR (IMMUNE «Mutations preserve coherence», додано 01.09.2026).**
-  Діф міняє не файли, а поняття, у якого кілька проєкцій: код, схема даних, API,
-  тести, доки/саме ТЗ, конфіги/crontab. Перелічи поняття, які чіпає діф, і пройдись по
-  їхніх проєкціях: неузгоджену — онови тим самим PR або чесно винеси в беклог тим самим
-  комітом. Зміна завершена, лише коли всі проєкції кажуть одну правду.
-- **Несподіваний стан — падай гучно, не вгадуй (IMMUNE «Unexpected states fail loud»).**
-  Не пиши код, який на невідомому вході тихо підставляє «зручне» значення чи ковтає
-  помилку в порожньому try/catch. Невідоме — це помилка з текстом, а не нуль за
-  замовчуванням.
+- Work phase by phase in TZ order; each phase ends with something working; commit
+  frequently and push the branch regularly.
+- **Delegate self-contained modules to a separate process/account if the environment
+  supports it.** If the system has a built-in offload mechanism (e.g. a global
+  `/offload` skill for a second account or a separate headless CLI process), delegate
+  implementation of modules that can be described in a self-contained prompt
+  (code generation + tests, bulk transformations); the orchestrator session reads
+  the result, applies the gates, and merges. If no such mechanism exists, do it
+  yourself — that is not a blocker.
+- **A new question during the work** (and there will be some) → the same rule as
+  Phase 1: ask yourself, answer in the answer-first format, record it in the TZ
+  changelog, and keep working. NEVER stop to ask the user unless it is a hard
+  external blocker (money / external person / someone else's account / missing secret).
+- **Loop semantics:** after each phase, check against the TZ (which AC are complete,
+  which are not) and proceed immediately to the next. Stop only in two states:
+  (a) all AC are complete, (b) only items in the "Needed from the human" queue remain.
+  "I've done 4/6 and will ask" is forbidden — it reads as "everything is ready"
+  and loses work.
+- Passing project checks (lint / typecheck / build / tests — whatever the project
+  treats as its gate) are required before a PR. Never hand over failing checks.
+- **Projection check before the PR (IMMUNE "Mutations preserve coherence", added 01.09.2026).**
+  A diff changes concepts, not just files, and a concept has several projections:
+  code, data schema, API, tests, docs/the TZ itself, configs/crontab. List the concepts
+  touched by the diff and review their projections: update an inconsistent one in
+  the same PR or explicitly put it in the backlog in the same commit. A change is
+  complete only when all projections tell the same truth.
+- **Unexpected states — fail loudly, do not guess (IMMUNE "Unexpected states fail loud").**
+  Do not write code that silently substitutes a "convenient" value for unknown
+  input or swallows an error in an empty try/catch. An unknown is an error with
+  a message, not a default zero.
 
-## Фаза 4 — Перевірка виконання і фінальний звіт
+## Phase 4 — Verify completion and produce the final report
 
-1. Якщо в паку доступний `/tz-verify` — запусти його на зробленому. `FIX-FIRST` →
-   почини і перевір знову (до 2 циклів); `BLOCK` → почини або чесно винеси у звіт,
-   що саме не добито і чому.
-2. **Фінальний звіт** (одне повідомлення, для людини, що відійшла і повернулась):
-   - JTBD одним рядком і статус критеріїв успіху (скільки з них уже перевірні).
-   - Що зроблено: фази, PR-лінк, вердикт tz-verify.
-   - **«Рішення, які я прийняв за тебе»**: N само-відповідей Фази 1 (де почитати),
-     M рішень синтезу Фази 2 (де почитати). Топ-3 найризикованіші — прямо у звіті.
-   - **«Потрібно від людини»**: черга зовнішніх блокерів, кожен — готовою до
-     виконання дією (точний URL, точна сума, точна кнопка), без плейсхолдерів.
-   - **«Живий доказ»** (IMMUNE «Every state is explainable», додано 01.09.2026): для
-     кожного критерію успіху — не «зроблено», а чим доведено: реальний запит і код
-     відповіді, реальна цифра з бази, скріншот, вивід команди. Зелені тести на моках
-     доказом роботи з даними не є. Немає живого доказу — пиши «не доведено», а не «готово».
-   - Банер «⚠️ РЕВ'Ю ОСЛАБЛЕНЕ», якщо у Фазі 2 працювало менше трьох критиків.
-   - ⚠️ ПРИПУЩЕННЯ, якщо були.
+1. If `/tz-verify` is available in the kit, run it on the completed work. `FIX-FIRST` →
+   fix and verify again (up to 2 cycles); `BLOCK` → fix or honestly report exactly
+   what remains unfinished and why.
+2. **Final report** (one message, for a human who stepped away and returned):
+   - JTBD in one line and the status of success criteria (how many can already be verified).
+   - What was done: phases, PR link, tz-verify verdict.
+   - **"Decisions I made for you"**: N self-answers from Phase 1 (where to read them),
+     M synthesis decisions from Phase 2 (where to read them). Put the top 3 riskiest
+     ones directly in the report.
+   - **"Needed from the human"**: the external blocker queue, each item a ready-to-execute
+     action (exact URL, exact amount, exact button), with no placeholders.
+   - **"Live evidence"** (IMMUNE "Every state is explainable", added 01.09.2026): for
+     every success criterion, state the proof rather than "done": a real request
+     and response code, an actual database figure, a screenshot, command output.
+     Passing mock tests do not prove that it works with data. Without live evidence,
+     write "not proven", not "done".
+   - A "⚠️ DEGRADED REVIEW" banner if fewer than three critics ran in Phase 2.
+   - ⚠️ ASSUMPTIONS, if any.
 
-## Коли НЕ викликати
+## When NOT to invoke
 
-- Багфікс чи тривіальна зміна → просто зроби, конвеєр — марне пальне.
-- Користувач хоче відповідати на питання сам → це вже вміє сам `/tz-go` (режим B
-  у Фазі 0); окремо кликати `/tz-draft` заради цього більше не треба.
-- ТЗ вже написане і потрібен лише аудит → `/tz-review`.
-- Робота вже зроблена і треба перевірити → `/tz-verify`.
+- A bug fix or trivial change → just do it; the pipeline wastes effort.
+- The user wants to answer questions personally → `/tz-go` already supports this
+  (mode B in Phase 0); a separate `/tz-draft` invocation is no longer needed.
+- A TZ is already written and only an audit is needed → `/tz-review`.
+- The work is already done and needs verification → `/tz-verify`.
 
-## Анти-патерни
+## Anti-patterns
 
-- **Поставити користувачу БУДЬ-ЯКЕ питання, крім першого про режим, і чекати** —
-  головне порушення. Дозволена рівно одна зупинка: питання про режим у Фазі 0 (і
-  очікування відповідей у режимі B). Усе інше або відповідається самостійно, або
-  йде в чергу «Потрібно від людини» БЕЗ зупинки решти роботи.
-- **Показати питання лише у фінальному звіті.** Список іде в чат у Фазі 1.5, до
-  аудиту й коду. Наприкінці правити рішення пізно — на них уже стоїть реалізація.
-- **Видавати питання по одному.** Увесь блок — одним повідомленням; дроблення
-  коштує рівно те саме, що ми забороняємо людині.
-- ТЗ без JTBD, вимірюваних критеріїв успіху і явних не-цілей на самому початку.
-- **Фіксована кількість питань заради круглої цифри** — кількість визначає
-  самокваліфікація (туманні зони → ще батч; чисто → стоп), а не квота.
-- Само-інтерв'ю без записаного вердикту самокваліфікації — «зупинився, бо
-  зупинився» не аудитується.
-- Наступний батч питань «про всяк випадок», без названих туманних зон, у які він
-  цілить.
-- Само-відповіді без фіксації в документі — «вгадав і забув» позбавляє користувача
-  можливості перекреслити хибну відповідь.
-- Десяток «⚠️ ПРИПУЩЕНЬ» замість відповідей — ухиляння від ставки скіла.
-- Пауза між фазами («ТЗ готове, запускати рев'ю?», «рев'ю пройдено, кодити?») —
-  фази з'єднані намертво.
-- Перший рядок коду без A0-фальсифікації — критики читають ТЗ, а не дані; ваду
-  головної гіпотези ловить лише живий тест.
-- Мовчазне застосування знахідки рев'ю, що міняє scope, без запису обґрунтування.
-- Відхилення від ТЗ під час реалізації без запису в changelog.
-- Зупинка на «зробив більшість» — фінал лише при всіх AC або чистій черзі блокерів.
-- Фінальний звіт без секції «Рішення, які я прийняв за тебе».
+- **Ask the user ANY question except the initial mode question and wait** —
+  the main violation. Exactly one stop is allowed: the mode question in Phase 0
+  (and waiting for answers in mode B). Everything else is either answered by the
+  agent or put in the "Needed from the human" queue WITHOUT stopping the remaining work.
+- **Show questions only in the final report.** The list goes into chat in Phase 1.5,
+  before audit and code. Changing decisions at the end is too late — implementation
+  already rests on them.
+- **Present questions one by one.** The entire block belongs in one message;
+  splitting it costs exactly as much as the behavior we ask the human to avoid.
+- A TZ without JTBD, measurable success criteria, and explicit non-goals at the very start.
+- **A fixed number of questions for a round number's sake** — self-qualification
+  determines the count (uncertain areas → another batch; clear → stop), not a quota.
+- A self-interview without a recorded self-qualification verdict — "stopped because
+  I stopped" cannot be audited.
+- Another batch of questions "just in case", without named uncertainties it targets.
+- Self-answers not recorded in the document — "guessed and forgot" prevents the user
+  from overriding a wrong answer.
+- A dozen "⚠️ ASSUMPTIONS" instead of answers — avoiding the skill's bet.
+- A pause between phases ("TZ ready, start review?", "review passed, start coding?") —
+  the phases are tightly connected.
+- The first line of code without A0 falsification — critics read the TZ, not the data;
+  only a live test catches a flaw in the core hypothesis.
+- Silently applying a review finding that changes scope without recording the reason.
+- Departing from the TZ during implementation without a changelog entry.
+- Stopping at "most of it is done" — finish only with all AC complete or a queue
+  containing only blockers.
+- A final report without a "Decisions I made for you" section.

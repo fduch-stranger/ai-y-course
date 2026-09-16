@@ -13,8 +13,8 @@ draft, or the first message; if it is mixed or unclear, do not ask — use Engli
 Everything user-facing follows that language: the TZ document, the questions and their
 recommended answers, the review journal, progress lines, the final report, and any commit
 messages you write on the user's behalf. Keep verbatim: command names (`/tz-go`), file
-names, code, config keys, and the code words — «ФІНІШ», "FINISH" and "DONE" are the SAME
-code word in any language. The Ukrainian text blocks inside this skill are templates of
+names, code, config keys, and the code words — "FINISH", "DONE", and their Ukrainian equivalent are the SAME
+code word in any language. The example text blocks inside this skill are templates of
 MEANING, not strings to paste: render them faithfully in the user's language. Prompts sent
 to critic models may stay in English (models handle it best), but every finding you quote
 back to the user is translated. Never switch language mid-run because a source file or a
