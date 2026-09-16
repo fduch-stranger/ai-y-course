@@ -1,27 +1,15 @@
-# Налаштування кіту — три декларації
+# Project setup
 
-> Заповни значення після двокрапки і закоміть. `self-check.sh` читає цей файл:
-> незаповнене поле = червона перевірка R8. Це не бюрократія — від цих трьох
-> відповідей залежить, ЩО саме перевіряється і ЩО безпечно зберігати в репо.
+visibility: public-accepted
+mode: solo
+constitution: self-managed
 
-visibility: ___
+Project name: ai-y-course.
+Current repository: local Git repository, no remote configured. No publication has occurred.
+The owner selected public visibility and accepted the defaults on 2026-09-16. Tracked project memory will be public if this repository is published. Working mode: one chat.
+Existing risk zones: no payment, authentication, or personal-data application code. No additional planned risk zones were specified.
+Check command: `bash scripts/check-setup.sh`.
+Deploy command: none yet.
+NVIDIA: optional; no key configured. Full three-critic review unavailable until configured and tested.
 
-<!-- private          — репозиторій приватний (бейдж «Private» на GitHub біля назви).
-     public-accepted  — репозиторій публічний, і я СВІДОМО приймаю, що вся робоча
-                        пам'ять (рішення, помилки, карта проєкту) публікується
-                        назавжди — навіть видалене лишається в історії git.
-     Не впевнений, який у тебе? Відкрий сторінку репозиторію на GitHub і глянь
-     бейдж біля назви. Змінив видимість пізніше — перезапусти:
-       bash <шлях-до-кіту>/scripts/check-publication-risk.sh -->
-
-mode: ___
-
-<!-- team — кілька чатів працюють паралельно; вимагається ізоляція worktree (R9).
-     solo — працюю одним чатом; вимога кількох дерев знімається. -->
-
-constitution: kit
-
-<!-- kit          — правила кіту під'єднані до CLAUDE.md рядком імпорту
-                    @CLAUDE.parallel-ai-dev.md (типово; так робить інсталятор).
-     self-managed — у проєкту ВЛАСНА повна конституція; кіт тоді перевіряє лише,
-                    що вона існує і згадує файли звірки (DECISIONS, карту, беклог). -->
+Use `private` or `public-accepted` for visibility after confirmation; `public-accepted` means the owner understands that tracked working memory enters public Git history. Use `solo` or `team` for mode. Team mode requires separate worktrees for concurrent implementation.

@@ -1,17 +1,18 @@
-# Карта проєкту — що ВЖЕ існує
+# Project map — what already exists
 
-> Насіння запобіжника «анти-кола». Перед тим як щось будувати, чат звіряється
-> з цією картою, а не «знаходить» модуль здогадкою.
-> Обов'язково позначай ДУБЛІ і те, який із них КАНОН — половина «знайдених»
-> папок у реальних проєктах виявляється мертвими копіями.
+| Component | Purpose | Status | Canonical location |
+| --- | --- | --- | --- |
+| Codex instructions | Loads project rules and maps TZ workflows to Codex | Active | `AGENTS.md` |
+| Project rules | Project zones, memory discipline, IMMUNE | Active | `CLAUDE.md` |
+| Working memory | Decisions, map, backlog, lessons, workstreams, handoffs | Active | `coordination/` |
+| TZ skills | Draft, review, verify, end-to-end workflow | Installed; full critic stages optional/unavailable | `.agents/skills/` |
+| Bootstrap adapter | Non-destructive installation and setup check; NVIDIA optional | Active | `scripts/bootstrap-codex.sh` |
+| Critic dispatcher | Codex CLI plus optional hosted critics | Codex smoke passed; hosted slots unconfigured | `scripts/llm-critic.sh` |
+| Critic configuration | Backend and model selection, no secrets | Active | `providers.json` |
+| Setup check | Script syntax, installed files, memory validation | Active | `scripts/check-setup.sh` |
+| Serena | Semantic tool configuration and compact memory pointers | Active | `.serena/` |
+| Original kit rules | Unmodified Ukrainian source for comparison | Reference only | `CLAUDE.parallel-ai-dev.md` |
 
-| Модуль / сторінка / скрипт | Що робить | Статус | Канон? | Де лежить |
-| -------------------------- | --------- | ------ | ------ | --------- |
-|                            |           |        |        |           |
+External source checkouts: `~/tz-skills` and `~/parallel-ai-dev`. Repository copies and adapters are the runtime sources for skills and critic calls; the upstream memory self-check runs from `~/parallel-ai-dev`.
 
-Статуси: `живий` / `пауза` / `покинутий` / `дубль`.
-
-## Що свідомо НЕ будуємо
-
-<!-- Перелік речей, яких у проєкті немає НАВМИСНО, з посиланням на DECISIONS.md.
-     Без цього списку чати регулярно «допомагають» і будують відкинуте. -->
+No application, framework, database, package manifest, application test suite, CI, remote repository, or deployment exists. Do not invent product architecture from the starter kit.

@@ -1,15 +1,7 @@
-# Реєстр потоків — хто над чим працює ЗАРАЗ
+# Workstreams
 
-> Правило: кожен чат на старті сесії додає/оновлює СВІЙ рядок. Чужі рядки не
-> переписувати. Роль `[COORD]` — рівно одна, і вона дійсна лише зі СЬОГОДНІШНЬОЮ
-> датою; протухла дата = роль вільна.
+Update only your own row. Parallel implementation requires separate branches and worktrees. Working mode: solo.
 
-| Чат (ім'я/ID) | Роль | Зона робіт | Гілка / worktree | Оновлено |
-| ------------- | ---- | ---------- | ---------------- | -------- |
-|               |      |            |                  |          |
-
-<!--
-Приклад заповнення:
-| coord-ranok | [COORD] | мерджі, деплой, спільні ресурси | main | 2026-08-09 |
-| checkout-fix | worker | сторінка оплати | feat/checkout-fix | 2026-08-09 |
--->
+| Chat | Role | Work | Branch / worktree | Updated |
+| --- | --- | --- | --- | --- |
+| starter-kit-setup | [COORD] | Codex adaptation and memory initialization; final checks | Current project root | 2026-09-16 |
