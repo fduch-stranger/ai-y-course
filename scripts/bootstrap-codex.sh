@@ -155,10 +155,10 @@ fi
 # ── 6. IMMUNE in the project's AGENTS.md ──────────────────────────────────────
 say "6/7 IMMUNE — $(L 'rules against code rot') → AGENTS.md"
 BLOCK="$TZ_ROOT/docs/IMMUNE_CLAUDE_BLOCK.en.md"
-if [ ! -f "$BLOCK" ]; then
-  bad "$(L "File $BLOCK not found")" "$(L "Update tz-skills: git -C $TZ_ROOT pull --ff-only")"
-elif [ -f "$PROJECT_DIR/AGENTS.md" ] && grep -qE 'Rules against code rot \(IMMUNE\)' "$PROJECT_DIR/AGENTS.md"; then
+if [ -f "$PROJECT_DIR/AGENTS.md" ] && grep -qE 'Rules against code rot \(IMMUNE\)' "$PROJECT_DIR/AGENTS.md"; then
   say "   • $(L 'block already present — not duplicating')"; ok "$(L 'IMMUNE already in AGENTS.md')"
+elif [ ! -f "$BLOCK" ]; then
+  bad "$(L "File $BLOCK not found")" "$(L "Update tz-skills: git -C $TZ_ROOT pull --ff-only")"
 else
   { printf '\n'; cat "$BLOCK"; } >> "$PROJECT_DIR/AGENTS.md" && { say "   ✓ $(L 'appended to the end of AGENTS.md')"; ok "$(L 'IMMUNE appended to AGENTS.md')"; } \
     || bad "$(L 'Could not append IMMUNE')" "$(L "Copy the contents of $BLOCK to the end of $PROJECT_DIR/AGENTS.md by hand")"
