@@ -1,5 +1,10 @@
 # Decisions and reasons
 
+## 2026-09-17 — Use Serena LSP for this project
+**Decision:** Set the project-local Serena backend to LSP and enable Bash for the existing shell scripts in `.serena/project.yml`.
+**Why:** The owner requested LSP for this project. An explicit project override preserves the global backend preference for other projects.
+**Runtime:** Serena selects its backend at startup. Restart it with this project selected at startup to apply the override; a running JetBrains session cannot switch backends.
+
 ## 2026-09-16 — NVIDIA is optional
 **Decision:** Allow local setup, drafting, implementation, and normal Codex verification without NVIDIA credentials. Mark full three-vendor review unavailable until configured and tested.
 **Why:** The owner explicitly made NVIDIA optional; missing optional credentials must not block useful work.
