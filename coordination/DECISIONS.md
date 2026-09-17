@@ -1,8 +1,8 @@
 # Decisions and reasons
 
 ## 2026-09-17 — Use Serena LSP for this project
-**Decision:** Set the project-local Serena backend to LSP and enable Bash for the existing shell scripts in `.serena/project.yml`.
-**Why:** The owner requested LSP for this project. An explicit project override preserves the global backend preference for other projects.
+**Decision:** Set the project-local Serena backend to LSP and enable Bash, Python, and TypeScript in `.serena/project.yml`. Bash remains the default for the existing shell scripts; TypeScript also covers JavaScript.
+**Why:** The owner requested LSP for this project and subsequently requested Python and TypeScript support. An explicit project override preserves the global backend preference for other projects.
 **Runtime:** Serena selects its backend at startup. Restart it with this project selected at startup to apply the override; a running JetBrains session cannot switch backends.
 
 ## 2026-09-16 — NVIDIA is optional
