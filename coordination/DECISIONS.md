@@ -5,10 +5,15 @@
 **Why:** The owner requested LSP for this project and subsequently requested Python and TypeScript support. An explicit project override preserves the global backend preference for other projects.
 **Runtime:** Serena selects its backend at startup. Restart it with this project selected at startup to apply the override; a running JetBrains session cannot switch backends.
 
-## 2026-09-16 — NVIDIA is optional
-**Decision:** Allow local setup, drafting, implementation, and normal Codex verification without NVIDIA credentials. Mark full three-vendor review unavailable until configured and tested.
-**Why:** The owner explicitly made NVIDIA optional; missing optional credentials must not block useful work.
-**Alternatives:** Requiring a key was rejected. Three same-vendor agents would not satisfy the kit's independent-vendor requirement.
+## 2026-09-17 — NVIDIA is optional for base work and required for full course readiness
+**Decision:** Allow drafting, implementation, and normal local Codex checks without NVIDIA credentials. Keep the course bootstrap red until `NVIDIA_API_KEY` is configured and all three distinct-vendor critic slots pass smoke tests.
+**Why:** The earlier owner decision prevented an optional credential from blocking useful work. The later request for course alignment requires preserving the original starter prompt's three-critic acceptance gate.
+**Alternatives:** Calling one Codex critic equivalent to three independent critics was rejected. Blocking every local task on a hosted-provider credential was also rejected.
+
+## 2026-09-17 — Preserve course behavior through an explicit Codex port
+**Decision:** Use `AGENTS.md`, project-local `.agents/skills`, and `codex-cli` in place of the upstream Claude-specific locations and executable. Preserve the four workflows, project memory, IMMUNE rules, independent-vendor requirement, setup questions, commit/push discipline, and green/red bootstrap semantics.
+**Why:** This project is operated with Codex, while the course prompt was written for Claude Code. Explicit substitutions keep the learning workflow intact without pretending Claude is installed.
+**Alternatives:** Installing an unused Claude environment or silently mixing Claude and Codex instruction sources would create two competing runtimes.
 
 ## 2026-09-16 — Use Codex and project-local workflows
 **Decision:** Install the four TZ skills in `.agents/skills/`, use `AGENTS.md` as the Codex entry point, and use Codex CLI for critic A.

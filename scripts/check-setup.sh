@@ -7,7 +7,7 @@ done
 for skill in tz-draft tz-review tz-verify tz-go; do
   test -s ".agents/skills/$skill/SKILL.md"
 done
-for file in AGENTS.md CLAUDE.md providers.json; do test -s "$file"; done
+for file in AGENTS.md CLAUDE.md providers.json coordination/COURSE_ALIGNMENT.md; do test -s "$file"; done
 python3 -m json.tool providers.json >/dev/null
 printf '%s\n' 'Local files, shell syntax, and provider JSON: OK'
 memory_check="scripts/memory-self-check.sh"

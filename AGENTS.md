@@ -10,7 +10,7 @@ The four skills are in `.agents/skills/`. Use `$tz-draft`, `$tz-review`, `$tz-ve
 
 - Use the available Codex tools for reads, edits, shell execution, research, and subagents. Claude-specific tool names are examples, not required installations.
 - The canonical critic dispatcher is `scripts/llm-critic.sh`. Resolve its absolute path from the project root; do not use upstream relative `../../lib` examples. `providers.json` is the canonical non-secret configuration.
-- NVIDIA is optional by the user's instruction. Without it, drafting, implementation, and normal local checks can proceed. Full three-vendor `/tz-review` and `/tz-verify` remain unavailable until three distinct vendors pass smoke tests. Report this limitation explicitly; never label a single Codex review as three independent critics. `/tz-go` may continue with ordinary Codex review and local verification, recording that the full critic stages were skipped.
+- NVIDIA is optional for base drafting, implementation, and normal local checks, but required for the original course's full green status. Full three-vendor `/tz-review` and `/tz-verify` remain unavailable until three distinct vendors pass smoke tests. Report this limitation explicitly; never label a single Codex review as three independent critics. `/tz-go` may continue with ordinary Codex review and local verification, recording that the full critic stages were skipped.
 - For full verification with Codex orchestrating, use a configured non-OpenAI critic to extract acceptance criteria. Do not fall back to the orchestrator's own model and call it independent. Use the sequential verifier; the upstream Claude-only `--fanout` scripts are not supported here.
 - Map background shell examples to bounded Codex process sessions. The host is macOS; check whether `timeout` exists before using it, or use a bounded subprocess runner.
 - Do not delete files, including temporary prompts. Preserve existing changes. Instructions that treat silence as approval do not authorize external actions or resolve required user input.
@@ -25,7 +25,7 @@ Run `bash scripts/check-setup.sh`. It validates the local setup and invokes the 
 - Money, access rights, and personal-data features: none currently implemented; no additional planned areas were specified.
 - Credentials: environment or user-level secret storage only, never committed. `providers.json` contains environment-variable names, not keys.
 - Check command: `bash scripts/check-setup.sh`.
-- Deploy command: none; no deployment target or remote is configured.
+- Deploy command: none; no deployment target exists. Git remote `origin` publishes `main` to `https://github.com/fduch-stranger/ai-y-course.git`.
 
 ## Working memory and coordination
 

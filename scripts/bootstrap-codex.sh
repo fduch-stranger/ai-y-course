@@ -147,7 +147,7 @@ if [ -z "${NVIDIA_API_KEY:-}" ]; then
   if grep -qs 'NVIDIA_API_KEY' "$HOME/.bashrc" 2>/dev/null; then
     info "$(L 'NVIDIA_API_KEY is in ~/.bashrc but not in this terminal — it will be picked up after a terminal restart')"
   fi
-  info "NVIDIA is optional and not configured; two additional critics are unavailable"
+  bad "No NVIDIA_API_KEY — two of the three course critics cannot run" "HUMAN: open https://build.nvidia.com (sign in with Google, no card needed), then https://build.nvidia.com/settings/api-keys → Generate API Key. Paste the nvapi-… key to Codex; it must be stored in user-level secret storage and never committed or printed. Base drafting and local Codex work remain available meanwhile."
 else
   say "   ✓ NVIDIA_API_KEY $(L 'present in the environment')"
 fi
@@ -182,7 +182,7 @@ if [ -z "${NVIDIA_API_KEY:-}" ]; then
   else
     bad "Codex critic failed" "Run bash scripts/llm-critic.sh --smoke critic_a and resolve the reported error"
   fi
-  info "Full three-critic review unavailable; optional NVIDIA setup skipped"
+  info "Base setup is usable, but full course readiness requires the two NVIDIA-hosted critic slots"
 else
   if TZ_PROVIDERS_CONFIG="$PROVIDERS" bash "$ADAPTER_DIR/llm-critic.sh" --smoke-all 2>&1 | sed 's/^/     /'; then
     ok "Critics: all 3 slots respond"
