@@ -1,5 +1,10 @@
 # Decisions and reasons
 
+## 2026-09-17 — Index one sanitized L2 brief per Codex task
+**Decision:** Maintain one public-safe brief per project task under `coordination/briefs/`, keyed by `CODEX_THREAD_ID`. Keep raw L1 histories in Codex until separate private storage and export automation are chosen.
+**Why:** Daily logs organize work by date and did not prove that each task was covered. Stable task IDs make coverage auditable, while raw conversations may contain personal data or credentials that must not enter the public repository.
+**Alternatives:** Treating day-level logs as task briefs was rejected because several tasks can share a date. Copying raw histories into this repository was rejected because the repository is public.
+
 ## 2026-09-17 — Use Serena LSP for this project
 **Decision:** Set the project-local Serena backend to LSP and enable Bash, Python, and TypeScript in `.serena/project.yml`. Bash remains the default for the existing shell scripts; TypeScript also covers JavaScript.
 **Why:** The owner requested LSP for this project and subsequently requested Python and TypeScript support. An explicit project override preserves the global backend preference for other projects.

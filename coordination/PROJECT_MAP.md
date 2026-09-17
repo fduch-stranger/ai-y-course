@@ -4,7 +4,9 @@
 | --- | --- | --- | --- |
 | Codex instructions | Canonical rules, project zones, IMMUNE, and TZ adaptations | Active | `AGENTS.md` |
 | Legacy checker pointer | Redirects to AGENTS.md; required by upstream memory checker | Compatibility only | `CLAUDE.md` |
-| Working memory | Decisions, map, backlog, lessons, workstreams, handoffs | Active | `coordination/` |
+| L3 working memory | Decisions, map, backlog, lessons, workstreams, handoffs | Active | `coordination/` |
+| L2 task briefs | Sanitized done/decisions/unfinished/pitfalls summary indexed by Codex task ID | Current 2/2 task inventory covered; future updates are manual | `coordination/briefs/` |
+| L1 task history | Raw Codex conversations | Remains in Codex; private export automation is not installed | Codex task storage |
 | Course alignment | Maps the original Claude starter prompt to this Codex port and records the remaining gate | Active | `coordination/COURSE_ALIGNMENT.md` |
 | TZ skills | Draft, review, verify, end-to-end workflow | Installed; read-only LLM smoke passed; full critic stages await NVIDIA | `.agents/skills/` |
 | Bootstrap adapter | Non-destructive Codex port of the course installer | Active; reports red until the required course critics work | `scripts/bootstrap-codex.sh` |
